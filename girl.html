@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Girl</title>
+	<style type="text/css">
+		img{
+			width: 50px;
+		}
+		a{
+			margin-right: 10px;
+			display: inline-block;
+		}
+		body{
+			width: 100%;
+		}
+		div{
+			width: 100%;
+		}
+	</style>
+</head>
+<body>
+<div id="page"></div>
+<div id="image">
+	<img src="">
+</div>
+<script type="text/javascript">
+	var connection = new ActiveXObject("ADODB.Connection") ;
+	var connectionstring="Data Source=192.168.2.245;Initial Catalog=girl;User ID=sa;Password=123456;Provider=SQLOLEDB";
+	connection.Open(connectionstring);
+	var rs = new ActiveXObject("ADODB.Recordset");
+	rs.Open("SELECT count(*) FROM girl", connection);
+	var total = parseInt(rs.fields(0))-1;
+	var page = '';
+	for (var i = 1; i <= total/500; i++) {
+		page = page + '<a href="#" onclick="pagenum('+i+')">'+i+'</a>';
+		
+	}
+	rs.close;
+	connection.close;
+	document.getElementById("page").innerHTML =  page;
+	function pagenum(num){
+		var connection = new ActiveXObject("ADODB.Connection") ;
+		var connectionstring="Data Source=192.168.2.245;Initial Catalog=girl;User ID=sa;Password=123456;Provider=SQLOLEDB";
+		connection.Open(connectionstring);
+		var rs = new ActiveXObject("ADODB.Recordset");
+		var from = (num-1)*500+1;
+		var to = num*500;
+		var query = "SELECT * FROM girl where id>="+from+" and id <="+to;
+		rs.Open(query, connection);
+		rs.MoveFirst
+		var img='';
+		while(!rs.eof)
+		{
+			 img = img+ ('<a target="_blank" href="'+rs.fields(1)+'"><img src="'+rs.fields(1)+'"></a>').replace(/\\n/g,'');
+		   rs.movenext;
+		}
+		document.getElementById("image").innerHTML =  img;
+		rs.close;
+		connection.close; 
+		}
+</script>
+</body>
+</html>
